@@ -1,10 +1,12 @@
 // 指定 dom
 let list = document.querySelector('.list');
+let text = document.querySelector('.text');
 let send = document.querySelector('.send');
 let data = JSON.parse(localStorage.getItem('listData')) || [];
 
 // 監聽與更新
 send.addEventListener('click', addData);
+text.addEventListener('keyup', addDataEnter);
 list.addEventListener('click', toggleDone);
 updateList(data);
 
@@ -12,6 +14,7 @@ updateList(data);
 function addData(e) {
     e.preventDefault();
     let txt = document.querySelector('.text').value;
+    if(txt == "") { return; }
     let todo = {
         content: txt
     };
@@ -26,11 +29,13 @@ function updateList(data) {
     data.forEach(function(item, index){
         str += `
             <li>
-                <a href="#" data-index="${ index }">Delete</a><span>${ item.content }</span>
+                <span>${ item.content }</span>
+                <a href="#" data-index="${ index }">Delete</a>
             </li>
         `
     })
     list.innerHTML = str;
+    text.value = "";
 }
 
 // 刪除代辦事項
@@ -42,3 +47,11 @@ function toggleDone(e) {
     localStorage.setItem('listData', JSON.stringify(data));
     updateList(data);
 }
+
+// Enter key
+function addDataEnter(e) {
+    if (e.keyCode === 13) {
+        e.preventDefault();
+        addData(e);
+    }
+} 
